@@ -5,9 +5,10 @@ const array = file
   .replace("\\r", " ")
   .split("\n")
   .map((val) => val.replace("\r", ""));
-let cycle = 0;
+let cycle = 1;
 let x = 1;
 let sum = [];
+let string = "";
 
 for (const line of array) {
   cycle++;
@@ -21,11 +22,22 @@ for (const line of array) {
 }
 
 function checkX() {
-  const show = [20, 60, 100, 140, 180, 220];
-  // console.log(cycle, x, x * cycle);
-  if (show.includes(cycle)) sum.push(x * cycle);
-}
+  console.log(
+    "sprite position",
+    cycle % 40 === x || cycle % 40 === x + 1 || cycle % 40 === x + 2,
+    cycle % 40,
+    x,
+    x + 1,
+    x + 2
+  );
+  if (cycle % 40 === x || cycle % 40 === x + 1 || cycle % 40 === x + 2)
+    string += "#";
+  else string += ".";
+  if (cycle % 40 === 1) string += "\n";
 
+  // console.log(cycle, x, x * cycle);
+}
+console.log(string);
 console.log(
   sum.reduce((init, val) => {
     return (init += val);
