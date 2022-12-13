@@ -18,37 +18,50 @@ monkeys = monkeys.splice(1, monkeys.length - 1).map((val) => {
   val[2] = val[2].replace(/\D+/g, "") * 1;
   val[3] = val[3].replace(/\D+/g, "") * 1;
   val[4] = val[4].replace(/\D+/g, "") * 1;
+  val.splice(5, 2);
   return val;
 });
 
-for (let i = 0; i < 20; i++) {
-  for (const [m, monkey] of monkeys.entries()) {
-    for (let j = 0; j < monkey[0].length; j++) {
-      let item = monkey[0][j];
-      score[m]++;
-      let worryLevel = 0;
+monkeys = monkeys.map((monkey) =>
+  monkey.map((val) => {
+    if (typeof val === "string") return val.replace("\r", "");
+    else return val;
+  })
+);
 
+const divider = monkeys.reduce((init, monkey) => {
+  return (init = init * monkey[2]);
+}, 1);
+
+console.log(monkeys);
+for (let i = 0; i < 10000; i++) {
+  for (const [m, monkey] of monkeys.entries()) {
+    for (const item of monkey[0]) {
+      let stress = 0;
+      score[m]++;
       if (monkey[1].includes("* old")) {
-        worryLevel = item * item;
-      } else if (monkey[1].includes("+")) {
-        // console.log("plus");
-        worryLevel = item + monkey[1].split(" ")[1] * 1;
-      } else if (monkey[1].includes("*")) {
-        // console.log("*");
-        worryLevel = item * monkey[1].split(" ")[1] * 1;
+        stress = item * item;
+      } else if (monkey[1].includes("+ ")) {
+        stress = item + monkey[1].split("+ ")[1] * 1;
+      } else if (monkey[1].includes("* ")) {
+        stress = item * monkey[1].split("* ")[1] * 1;
       }
 
-      if (Math.floor(worryLevel / 3) % monkey[2] === 0) {
-        monkeys[monkey[3]][0].push(monkey[0].shift());
-        j = j - 1;
+      if ((stress % divider) % monkey[2] === 0) {
+        monkeys[monkey[3]][0].push(stress % divider);
       } else {
-        monkeys[monkey[4]][0].push(monkey[0].shift());
-        j = j - 1;
+        monkeys[monkey[4]][0].push(stress % divider);
       }
     }
+    monkey[0] = [];
   }
-  // console.log(monkeys);
+  // console.log(i, monkeys);
 }
 
-console.log(score.sort((a, b) => b - a));
+console.log(divider);
+
 // console.log(monkeys);
+console.log(
+  score.sort((a, b) => b - a),
+  score[0] * score[1]
+);
